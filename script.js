@@ -10,7 +10,7 @@ const classTimetable = {
 const teacherSubjectMapping = [
     { teacher: "Teacher A", subject: "Math", classes: ["6", "8"] },
     { teacher: "Teacher B", subject: "Science", classes: ["6", "7", "8"] },
-    { teacher: "Teacher B", subject: "Science", classes: ["7"] },
+    { teacher: "Teacher B", subject: "Math", classes: ["7"] },
     { teacher: "Teacher C", subject: "English", classes: ["6", "7", "8"] },
     { teacher: "Teacher D", subject: "History", classes: ["6", "7", "8"] },
     { teacher: "Teacher E", subject: "Geography", classes: ["6", "7", "8"] },
