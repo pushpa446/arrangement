@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Availability Checker</title>
+    <title>Teacher Arrangement Checker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,35 +27,44 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
-    <h1>Teacher Availability Checker</h1>
+    <h1>Teacher Arrangement Checker</h1>
 
-    <label for="class">Select Class:</label>
-    <select id="class">
-        <option value="6">Class 6</option>
-        <option value="7">Class 7</option>
-        <option value="8">Class 8</option>
-        <option value="9">Class 9</option>
-        <option value="10">Class 10</option>
-        <option value="11">Class 11</option>
-        <option value="12">Class 12</option>
+    <label for="teacher">Select Absent Teacher:</label>
+    <select id="teacher">
+        <option value="">-- Select a Teacher --</option>
     </select>
 
-    <label for="period">Select Period:</label>
-    <select id="period">
-        <option value="1">Period 1</option>
-        <option value="2">Period 2</option>
-        <option value="3">Period 3</option>
-        <option value="4">Period 4</option>
-        <option value="5">Period 5</option>
-    </select>
+    <button id="checkButton">Check Arrangements</button>
 
-    <button id="checkButton">Check Availability</button>
-
-    <h2>Available Teachers:</h2>
-    <ul id="availableTeachers"></ul>
+    <h2>Arrangement Details:</h2>
+    <table id="arrangementTable">
+        <thead>
+            <tr>
+                <th>Class</th>
+                <th>Period</th>
+                <th>Subject</th>
+                <th>Available Teacher</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic rows will be inserted here -->
+        </tbody>
+    </table>
 
     <script src="script.js"></script>
 </body>
