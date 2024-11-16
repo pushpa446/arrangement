@@ -10,16 +10,16 @@ const classTimetable = {
 const teacherSubjectMapping = [
     { teacher: "Teacher A", subject: "Math", classes: ["6", "8"] },
     { teacher: "Teacher B", subject: "Science", classes: ["6", "7", "8"] },
-    { teacher: "Teacher B", subject: "Math", classes: ["7"] },
+    { teacher: "Teacher B", subject: "Science", classes: ["7"] },
     { teacher: "Teacher C", subject: "English", classes: ["6", "7", "8"] },
     { teacher: "Teacher D", subject: "History", classes: ["6", "7", "8"] },
     { teacher: "Teacher E", subject: "Geography", classes: ["6", "7", "8"] },
     // Add more teachers here
 ];
 
-// Populate teacher dropdown
+// Populate teacher dropdown (multiple selection)
 function populateTeacherDropdown() {
-    const teacherDropdown = document.getElementById("teacher");
+    const teacherDropdown = document.getElementById("teachers");
     const teachers = [...new Set(teacherSubjectMapping.map(mapping => mapping.teacher))];
     teachers.forEach(teacher => {
         const option = document.createElement("option");
@@ -46,49 +46,67 @@ function getAbsentTeacherSchedule(teacher) {
     return schedule;
 }
 
-// Find available teachers for a specific subject and class
-function findAvailableTeacher(subject, classNum) {
-    const busyTeachers = teacherSubjectMapping
+// Find all available teachers for a specific subject and class (for a particular period)
+function findAvailableTeachers(subject, classNum, busyTeachers) {
+    const availableTeachers = teacherSubjectMapping
         .filter(mapping => mapping.subject === subject && mapping.classes.includes(classNum))
-        .map(mapping => mapping.teacher);
+        .map(mapping => mapping.teacher)
+        .filter(teacher => !busyTeachers.includes(teacher));
 
-    const allTeachers = [...new Set(teacherSubjectMapping.map(mapping => mapping.teacher))];
-    return allTeachers.filter(teacher => !busyTeachers.includes(teacher))[0] || "No substitute available";
+    return availableTeachers;
 }
 
 // Display arrangements in the table
-function displayArrangements(schedule) {
+function displayArrangements(absentTeachers) {
     const tableBody = document.querySelector("#arrangementTable tbody");
     tableBody.innerHTML = ""; // Clear previous rows
 
-    schedule.forEach(({ class: classNum, period, subject }) => {
-        const availableTeacher = findAvailableTeacher(subject, classNum);
+    let allSchedules = [];
+
+    // Collect all schedules for the absent teachers
+    absentTeachers.forEach(absentTeacher => {
+        const schedule = getAbsentTeacherSchedule(absentTeacher);
+        allSchedules = [...allSchedules, ...schedule];
+    });
+
+    if (allSchedules.length === 0) {
+        alert("No periods found for the selected absent teachers.");
+        return;
+    }
+
+    // For each schedule, find all substitute teachers and display them
+    allSchedules.forEach(({ class: classNum, period, subject }) => {
+        const busyTeachers = absentTeachers.concat(getTeachersForSubjectAndClass(subject, classNum));
+        const availableTeachers = findAvailableTeachers(subject, classNum, busyTeachers);
 
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${classNum}</td>
             <td>${period}</td>
             <td>${subject}</td>
-            <td>${availableTeacher}</td>
+            <td>${availableTeachers.length > 0 ? availableTeachers.join(", ") : "No substitutes available"}</td>
         `;
         tableBody.appendChild(row);
     });
 }
 
+// Get all teachers for a given subject and class
+function getTeachersForSubjectAndClass(subject, classNum) {
+    return teacherSubjectMapping
+        .filter(mapping => mapping.subject === subject && mapping.classes.includes(classNum))
+        .map(mapping => mapping.teacher);
+}
+
 // Event listener for the "Check Arrangements" button
 document.getElementById("checkButton").addEventListener("click", () => {
-    const absentTeacher = document.getElementById("teacher").value;
-    if (!absentTeacher) {
-        alert("Please select an absent teacher.");
+    const selectedTeachers = Array.from(document.getElementById("teachers").selectedOptions).map(option => option.value);
+
+    if (selectedTeachers.length === 0) {
+        alert("Please select at least one absent teacher.");
         return;
     }
 
-    const schedule = getAbsentTeacherSchedule(absentTeacher);
-    if (schedule.length === 0) {
-        alert("This teacher has no scheduled periods.");
-    } else {
-        displayArrangements(schedule);
-    }
+    displayArrangements(selectedTeachers);
 });
 
 // Initialize the page
