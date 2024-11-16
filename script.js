@@ -8,9 +8,8 @@ const classTimetable = {
 
 // Teacher-Subject-Class mapping
 const teacherSubjectMapping = [
-    { teacher: "Teacher A", subject: "Math", classes: ["6", "8"] },
+    { teacher: "Teacher A", subject: "Math", classes: ["6", "7", "8"] },
     { teacher: "Teacher B", subject: "Science", classes: ["6", "7", "8"] },
-    { teacher: "Teacher B", subject: "Math", classes: ["7"] },
     { teacher: "Teacher C", subject: "English", classes: ["6", "7", "8"] },
     { teacher: "Teacher D", subject: "History", classes: ["6", "7", "8"] },
     { teacher: "Teacher E", subject: "Geography", classes: ["6", "7", "8"] },
@@ -37,7 +36,7 @@ function getAbsentTeacherSchedule(teacher) {
             mapping.classes.forEach(classNum => {
                 for (const period in classTimetable[classNum]) {
                     if (classTimetable[classNum][period] === mapping.subject) {
-                        schedule.push({ class: classNum, period, subject: mapping.subject });
+                        schedule.push({ class: classNum, period, subject: mapping.subject, teacher: mapping.teacher });
                     }
                 }
             });
@@ -75,12 +74,13 @@ function displayArrangements(absentTeachers) {
     }
 
     // For each schedule, find all substitute teachers and display them
-    allSchedules.forEach(({ class: classNum, period, subject }) => {
+    allSchedules.forEach(({ class: classNum, period, subject, teacher }) => {
         const busyTeachers = absentTeachers.concat(getTeachersForSubjectAndClass(subject, classNum));
         const availableTeachers = findAvailableTeachers(subject, classNum, busyTeachers);
 
         const row = document.createElement("tr");
         row.innerHTML = `
+            <td>${teacher}</td>
             <td>${classNum}</td>
             <td>${period}</td>
             <td>${subject}</td>
