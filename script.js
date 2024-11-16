@@ -47,6 +47,7 @@ function getAbsentTeacherSchedule(teacher) {
 
 // Find all available teachers for a specific subject and class (for a particular period)
 function findAvailableTeachers(subject, classNum, busyTeachers) {
+    // Collect teachers who are assigned to this subject and class but are not busy
     const availableTeachers = teacherSubjectMapping
         .filter(mapping => mapping.subject === subject && mapping.classes.includes(classNum))
         .map(mapping => mapping.teacher)
@@ -75,7 +76,7 @@ function displayArrangements(absentTeachers) {
 
     // For each schedule, find all substitute teachers and display them
     allSchedules.forEach(({ class: classNum, period, subject, teacher }) => {
-        const busyTeachers = absentTeachers.concat(getTeachersForSubjectAndClass(subject, classNum));
+        const busyTeachers = absentTeachers.concat(getTeachersForSubjectAndClass(subject, classNum));  // Include absent teachers in the list of busy teachers
         const availableTeachers = findAvailableTeachers(subject, classNum, busyTeachers);
 
         const row = document.createElement("tr");
