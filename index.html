@@ -44,9 +44,9 @@
 <body>
     <h1>Teacher Arrangement Checker</h1>
 
-    <label for="teacher">Select Absent Teacher:</label>
-    <select id="teacher">
-        <option value="">-- Select a Teacher --</option>
+    <label for="teachers">Select Absent Teachers:</label>
+    <select id="teachers" multiple size="6">
+        <!-- Dynamically populated options -->
     </select>
 
     <button id="checkButton">Check Arrangements</button>
@@ -58,7 +58,7 @@
                 <th>Class</th>
                 <th>Period</th>
                 <th>Subject</th>
-                <th>Available Teacher</th>
+                <th>Available Teachers</th>
             </tr>
         </thead>
         <tbody>
